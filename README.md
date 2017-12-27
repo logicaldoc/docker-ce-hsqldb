@@ -1,7 +1,7 @@
 # logicaldoc-ce-hsqldb
 Docker project for LogicalDOC Community (ready to use with HSQLDB embedded database)
 
-LogicalDOC is a Web-based open source document management system. By leveraging on the best-of-breed Java frameworks, it creates a flexible and powerful document management platform, which thanks to the most advanced presentation technology, is able to meet the needs of usability and more demanding management. For further reading http://www.logicaldoc.com
+LogicalDOC is a Web-based open source document management system. By leveraging on the best-of-breed Java frameworks, it creates a flexible and powerful document management platform, which thanks to the most advanced presentation technology, is able to meet the needs of usability and more demanding management. For further reading https://www.logicaldoc.com
 
 
 How to run:
