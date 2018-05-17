@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p" xmlns:security="http://www.springframework.org/schema/security" default-autowire="no" default-lazy-init="false" xsi:schemaLocation="             http://www.springframework.org/schema/beans              http://www.springframework.org/schema/beans/spring-beans.xsd             http://www.springframework.org/schema/util              http://www.springframework.org/schema/util/spring-util.xsd             http://www.springframework.org/schema/context             http://www.springframework.org/schema/context/spring-context.xsd             http://www.springframework.org/schema/tx             http://www.springframework.org/schema/tx/spring-tx.xsd             http://www.springframework.org/schema/aop             http://www.springframework.org/schema/aop/spring-aop.xsd             http://www.springframework.org/schema/security             http://www.springframework.org/schema/security/spring-security.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p" xmlns:security="http://www.springframework.org/schema/security" xmlns:jms="http://www.springframework.org/schema/jms" default-autowire="no" default-lazy-init="false" xsi:schemaLocation="             http://www.springframework.org/schema/beans              http://www.springframework.org/schema/beans/spring-beans.xsd             http://www.springframework.org/schema/util              http://www.springframework.org/schema/util/spring-util.xsd             http://www.springframework.org/schema/context             http://www.springframework.org/schema/context/spring-context.xsd             http://www.springframework.org/schema/tx             http://www.springframework.org/schema/tx/spring-tx.xsd             http://www.springframework.org/schema/aop             http://www.springframework.org/schema/aop/spring-aop.xsd             http://www.springframework.org/schema/security             http://www.springframework.org/schema/security/spring-security.xsd">
   <import resource="classpath*:context-security.xml" />
   <import resource="classpath*:context/context-*.xml" />
+  <bean id="MessengerRemoteService" init-method="init" class="com.logicaldoc.web.remote.MessengerRemoteServiceImpl">
+    <property name="eventCollector" ref="EventCollector" />
+    <property name="config" ref="ContextProperties" />
+  </bean>
   <!-- This post processor ensures placeholders substitutions -->
   <bean id="PropertyPlaceholderConfigurer" class="com.logicaldoc.util.spring.PropertiesPlaceHolder" lazy-init="false" abstract="false" autowire="default">
     <property name="locations">
@@ -42,14 +46,12 @@
     </property>
   </bean>
   <!-- Hibernate SessionFactory -->
-  <bean id="SessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" abstract="false" lazy-init="default" autowire="default">
+  <bean id="SessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" abstract="false" lazy-init="default" autowire="default">
     <property name="dataSource" ref="DataSource" />
     <property name="entityInterceptor">
       <bean class="com.logicaldoc.core.PersistenceObjectInterceptor" />
     </property>
-    <property name="mappingLocations">
-      <value>classpath*:mappings/*.hbm.xml</value>
-    </property>
+    <property name="mappingLocations" value="classpath*:mappings/*.hbm.xml" />
     <property name="hibernateProperties">
       <props>
         <prop key="hibernate.dialect">${hibernate.dialect}</prop>
@@ -59,7 +61,7 @@
     </property>
   </bean>
   <!--Transaction management -->
-  <bean id="TransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager" abstract="false" lazy-init="default" autowire="default">
+  <bean id="TransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager" abstract="false" lazy-init="default" autowire="default">
     <property name="sessionFactory" ref="SessionFactory" />
   </bean>
   <!--Transactional proxy -->
@@ -86,7 +88,7 @@
     <property name="repeatInterval" value="2000" />
   </bean>
   <!-- Scheduler -->
-  <bean id="Scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
+  <bean id="Scheduler" class="com.logicaldoc.core.task.SchedulerFactoryBean" destroy-method="destroy">
     <property name="waitForJobsToCompleteOnShutdown" value="true" />
     <property name="triggers">
       <list>
